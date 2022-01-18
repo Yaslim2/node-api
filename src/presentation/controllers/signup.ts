@@ -1,12 +1,15 @@
 import { InvalidParamError, MissingParamError } from './../errors'
 import { HttpRequest, HttpResponse, Controller, EmailValidator } from '../protocols'
 import { badRequest, serverError } from '../helpers/http-helper'
+import { AddAcount } from '../../domain/usecases/add-account'
 
 export class SignUpController implements Controller {
   private readonly emailValidator: EmailValidator
+  private readonly addAccount: AddAcount
 
-  constructor (emailValidator: EmailValidator) {
+  constructor (emailValidator: EmailValidator, addAccount: AddAcount) {
     this.emailValidator = emailValidator
+    this.addAccount = addAccount
   }
 
   handle (httpRequest: HttpRequest): HttpResponse {
@@ -17,7 +20,7 @@ export class SignUpController implements Controller {
           return badRequest(new MissingParamError(field))
         }
       }
-      const { password, email, passwordConfirmation } = httpRequest.body
+      const { name, password, email, passwordConfirmation } = httpRequest.body
       if (password !== passwordConfirmation) {
         return badRequest(new InvalidParamError('passwordConfirmation'))
       }
@@ -25,9 +28,14 @@ export class SignUpController implements Controller {
       if (!isValid) {
         return badRequest(new InvalidParamError('email'))
       }
+
+      this.addAccount.add({
+        name, email, password
+      })
+
       return {
         body: {},
-        statusCode: 200
+        statusCode: 250
       }
     } catch (error) {
       return serverError()

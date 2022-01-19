@@ -1,6 +1,6 @@
+import { AddAccountModel } from './../../../../domain/usecases/add-account'
 import { AddAccountRepository } from '../../../../data/protocols/add-account-repository'
 import { AccountModel } from '../../../../domain/models/account'
-import { AddAccountModel } from '../../../../domain/usecases/add-account'
 import { MongoHelper } from '../helpers/mongo-helper'
 
 export class AccountMongoRepository implements AddAccountRepository {
@@ -9,8 +9,6 @@ export class AccountMongoRepository implements AddAccountRepository {
     const result = await accountCollection.insertOne(accountData)
     const { insertedId } = result
     const accountById = await accountCollection.findOne({ _id: insertedId })
-    const { _id, ...accountWithoutId } = accountById
-    const account = Object.assign({}, accountWithoutId, { id: _id.toHexString() }) as AccountModel
-    return await new Promise(resolve => resolve(account))
+    return MongoHelper.map(accountById)
   }
 }

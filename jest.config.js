@@ -1,5 +1,5 @@
 module.exports = {
-  roots: ['<rootDir>/src', '<rootDir>'],
+  roots: ['<rootDir>/src'],
   collectCoverage: true,
   coverageDirectory: 'coverage',
   collectCoverageFrom: [

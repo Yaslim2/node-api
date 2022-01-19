@@ -10,7 +10,6 @@ module.exports = {
     '!**/protocols/**', '!**/test/**'
   ],
   coverageProvider: 'babel',
-  testEnvironment: 'node',
   transform: {
     '.+\\.ts$': 'ts-jest'
   }

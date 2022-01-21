@@ -13,6 +13,5 @@ export class ValidationComposite implements Validation {
         return error
       }
     }
-    return null
   }
 }

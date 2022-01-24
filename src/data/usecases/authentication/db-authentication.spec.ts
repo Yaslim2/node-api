@@ -12,7 +12,7 @@ import {
 const makeFakeAccount = (): AccountModel => ({
   id: 'any-id',
   password: 'hashed-password',
-  name: 'any-name', 
+  name: 'any-name',
   email: 'any-email@email.com'
 })
 

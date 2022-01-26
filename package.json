@@ -32,7 +32,7 @@
   },
   "scripts": {
     "start": "node dist/main/server.js",
-    "debug": "node --inspect=0.0.0.0:9222 --nolazy dist/main/server.js",
+    "debug": "nodemon -L --watch ./dist --inspect=0.0.0.0:9222 --nolazy ./dist/main/server.js",
     "build": "rimraf dist && tsc",
     "up": "yarn build && sudo docker-compose up -d",
     "down": "sudo docker-compose down",
@@ -48,6 +48,7 @@
     "express": "^4.17.2",
     "jsonwebtoken": "^8.5.1",
     "mongodb": "^3.6.8",
+    "nodemon": "^2.0.15",
     "validator": "^13.7.0"
   },
   "engines": {

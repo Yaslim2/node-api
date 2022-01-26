@@ -32,6 +32,7 @@
   },
   "scripts": {
     "start": "node dist/main/server.js",
+    "debug": "node --inspect=0.0.0.0:9222 --nolazy dist/main/server.js",
     "build": "rimraf dist && tsc",
     "up": "yarn build && sudo docker-compose up -d",
     "down": "sudo docker-compose down",

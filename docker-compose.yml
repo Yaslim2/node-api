@@ -12,8 +12,9 @@ services:
     container_name: api-container
     build: .
     restart: always
-    image: clean-node-api
-    command: npm run debug
+    image: node:14
+    working_dir: /usr/workspace/clean-node-api
+    command: bash -c "npm install --only=prod && npm run debug"
     volumes:
       - ./dist:/usr/workspace/clean-node-api/dist
       - ./package.json:/usr/workspace/clean-node-api/package.json

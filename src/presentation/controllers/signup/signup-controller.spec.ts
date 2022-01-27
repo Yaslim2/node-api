@@ -1,7 +1,19 @@
-import { AddAcount, AddAccountModel, AccountModel, HttpRequest, Validation } from './signup-controller-protocols'
+import {
+  AddAcount, AddAccountModel,
+  AccountModel, HttpRequest, Validation, Authentication, AuthenticationModel
+} from './signup-controller-protocols'
 import { MissingParamError, ServerError } from '../../errors'
 import { SignUpController } from './signup-controller'
 import { ok, serverError, badRequest } from '../../helpers/http/http-helper'
+
+const makeAuthentication = (): Authentication => {
+  class AuthenticationStub implements Authentication {
+    async auth (authentication: AuthenticationModel): Promise<string> {
+      return await new Promise(resolve => resolve('any-token'))
+    }
+  }
+  return new AuthenticationStub()
+}
 
 const makeFakeAccount = (): AccountModel => ({
   id: 'valid_id',
@@ -43,16 +55,19 @@ interface SutTypes {
   sut: SignUpController
   addAccountStub: AddAcount
   validationStub: Validation
+  authenticationStub: Authentication
 }
 
 const makeSut = (): SutTypes => {
   const addAccountStub = makeAddAcount()
   const validationStub = makeValidation()
-  const sut = new SignUpController(addAccountStub, validationStub)
+  const authenticationStub = makeAuthentication()
+  const sut = new SignUpController(addAccountStub, validationStub, authenticationStub)
   return {
     sut,
     addAccountStub,
-    validationStub
+    validationStub,
+    authenticationStub
   }
 }
 
@@ -99,5 +114,13 @@ describe('SignUp Controller', () => {
     const httpRequest = makeFakeRequest()
     const httpResponse = await sut.handle(httpRequest)
     expect(httpResponse).toEqual(badRequest(new MissingParamError('any-field')))
+  })
+
+  test('Should call Authentication with correct values', async () => {
+    const { sut, authenticationStub } = makeSut()
+    const authSpy = jest.spyOn(authenticationStub, 'auth')
+    const httpRequest = makeFakeRequest()
+    await sut.handle(httpRequest)
+    expect(authSpy).toHaveBeenCalledWith({ email: httpRequest.body.email, password: httpRequest.body.password })
   })
 })

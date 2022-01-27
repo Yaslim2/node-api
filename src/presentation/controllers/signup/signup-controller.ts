@@ -6,7 +6,7 @@ export class SignUpController implements Controller {
   constructor (
     private readonly addAccount: AddAcount,
     private readonly validation: Validation,
-    private readonly authentication?: Authentication
+    private readonly authentication: Authentication
   ) {
     this.addAccount = addAccount
     this.validation = validation

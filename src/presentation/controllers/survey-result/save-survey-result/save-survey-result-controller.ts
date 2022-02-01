@@ -1,6 +1,5 @@
-
 import { InvalidParamError } from '@/presentation/errors'
-import { forbbiden, serverError } from '@/presentation/helpers/http/http-helper'
+import { forbbiden, serverError, ok } from '@/presentation/helpers/http/http-helper'
 import { Controller, HttpRequest, HttpResponse, LoadSurveyById, SaveSurveyResult } from './save-survey-result-controller-protocols'
 export class SaveSurveyResultController implements Controller {
   constructor (private readonly loadSurveyById: LoadSurveyById, private readonly saveSurveyResult: SaveSurveyResult) {}
@@ -17,14 +16,13 @@ export class SaveSurveyResultController implements Controller {
         if (!answers.includes(answer)) {
           return forbbiden(new InvalidParamError('answer'))
         }
-        await this.saveSurveyResult.save({
+        const surveyResult = await this.saveSurveyResult.save({
           accountId, surveyId, answer, date: new Date()
         })
+        return ok(surveyResult)
       } else {
         return forbbiden(new InvalidParamError('surveyId'))
       }
-
-      return null
     } catch (error) {
       return serverError(error)
     }
